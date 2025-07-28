@@ -8,9 +8,8 @@ import androidx.compose.ui.platform.LocalContext
 import com.antmar.card_scanner.presentation.screens.CardScannerScreen
 import com.antmar.cards_list.presentation.screens.CardListScreen
 import com.antmar.kardz.App
+import com.antmar.kardz.presentation.screens.MainScreen
 import com.antmar.kardz.presentation.theme.KardzTheme
-import com.antmar.local_database.di.DatabaseComponent
-import com.antmar.local_database.di.create
 import com.antmar.single_card_preview.presentation.screens.BarcodeScreen
 
 class MainActivity : ComponentActivity() {
@@ -22,9 +21,7 @@ class MainActivity : ComponentActivity() {
 
                 val databaseComponent = (LocalContext.current.applicationContext as App).databaseComponent
 
-                BarcodeScreen(databaseComponent)
-                CardListScreen(databaseComponent)
-                CardScannerScreen(databaseComponent)
+                MainScreen(databaseComponent)
             }
         }
     }

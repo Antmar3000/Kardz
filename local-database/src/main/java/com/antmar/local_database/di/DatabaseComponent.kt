@@ -3,6 +3,7 @@ package com.antmar.local_database.di
 import android.content.Context
 import androidx.room.Room
 import com.antmar.local_database.data.database.CardsDatabase
+import com.antmar.local_database.data.shared_data.SharedDataManager
 import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Provides
 import me.tatarka.inject.annotations.Scope
@@ -41,6 +42,14 @@ abstract class DatabaseComponent (
     @DatabaseScope
     @Provides
     fun provideEditDao (db : CardsDatabase) = db.getEditDao()
+
+    val sharedDataManager : SharedDataManager by lazy {
+        SharedDataManager()
+    }
+
+    @DatabaseScope
+    @Provides
+    fun provideSharedDataManager() : SharedDataManager = sharedDataManager
 
 
 }

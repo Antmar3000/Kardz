@@ -23,3 +23,20 @@ inline fun <reified VM : ViewModel> (() -> VM).injectViewModel(): VM {
     }
     return viewModel(factory = factory)
 }
+
+@Composable
+inline fun <reified VM : ViewModel> KIViewModel(noinline creator : () -> VM) : VM {
+    val factory = remember (creator) {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val instance = creator()
+                if (!modelClass.isInstance(instance)){
+                    throw IllegalArgumentException("Expected ${modelClass.canonicalName}, got ${instance::class.java.canonicalName}")
+                }
+                @Suppress("UNCHECKED_CAST")
+                return instance as T
+            }
+        }
+    }
+    return viewModel(factory = factory)
+}

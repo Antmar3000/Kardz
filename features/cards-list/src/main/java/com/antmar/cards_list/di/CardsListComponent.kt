@@ -9,6 +9,7 @@ import com.antmar.cards_list.data.repository.CardsListRepositoryImpl
 import com.antmar.cards_list.domain.CardsListRepository
 import com.antmar.cards_list.domain.usecases.DeleteCardUseCase
 import com.antmar.cards_list.domain.usecases.GetAllCardsUseCase
+import com.antmar.cards_list.domain.usecases.SendIdUseCase
 import com.antmar.cards_list.presentation.viewmodels.CardsListViewModel
 import com.antmar.local_database.data.database.DAOs.CardsListDao
 import com.antmar.local_database.di.DatabaseComponent
@@ -32,6 +33,7 @@ abstract class CardsListComponent (
 
     abstract fun getGetAllCardsUseCase() : GetAllCardsUseCase
     abstract fun getDeleteCardUseCase() : DeleteCardUseCase
+    abstract fun getSendIdUseCase() : SendIdUseCase
 
     abstract fun cardsListViewModelFactory() : () -> CardsListViewModel
 }

@@ -37,7 +37,7 @@ android {
 dependencies {
 
     implementation(project(":local-database"))
-    implementation(project(":core"))
+    api(project(":core"))
 
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

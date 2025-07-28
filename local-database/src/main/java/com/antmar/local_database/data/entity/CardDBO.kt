@@ -8,5 +8,5 @@ data class CardDBO (
     @PrimaryKey(autoGenerate = true) val id : Int = 0,
     val name : String,
     val code : Long,
-    val color : String
+    val color : Long
 )

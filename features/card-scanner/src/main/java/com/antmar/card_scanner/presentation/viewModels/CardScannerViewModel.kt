@@ -9,14 +9,16 @@ import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class CardScannerViewModel (
-    private val insertUseCase : InsertCardUseCase
+class CardScannerViewModel(
+    private val insertUseCase: InsertCardUseCase
 ) : ViewModel() {
 
-    init {
-
-        val card = CardUIEntity(id = 0, name = "Card", code = 250L, color = "blue")
-
+    fun insertCard(
+        name: String,
+        code: Long,
+        color: Long
+    ) {
+        val card = CardUIEntity(id = 0, name = name, code = code, color = color)
         viewModelScope.launch {
             insertUseCase(card)
         }

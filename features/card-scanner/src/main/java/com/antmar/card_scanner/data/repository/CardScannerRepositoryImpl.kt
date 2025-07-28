@@ -12,6 +12,6 @@ class CardScannerRepositoryImpl (
     private val dao : InsertCardDao
 ) : CardScannerRepository {
     override suspend fun insertCard(card: CardUIEntity) {
-        Log.d("myLog", "repo-insert + ${dao.insertCard(card.toDBOInsert())}}")
+        dao.insertCard(card.toDBOInsert())
     }
 }

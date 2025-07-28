@@ -14,7 +14,7 @@ fun generateBarcodeBitmap(
     format: BarcodeFormat = BarcodeFormat.EAN_13,
     width : Int = 600,
     height : Int = 300
-) : ImageBitmap? {
+) : ImageBitmap {
 
     val bitMatrix = MultiFormatWriter().encode(text, format, width, height)
     val bitmap = createBitmap(width, height, Bitmap.Config.RGB_565)
@@ -25,5 +25,5 @@ fun generateBarcodeBitmap(
         }
     }
 
-    return if (text.isEmpty()) null else bitmap.asImageBitmap()
+    return bitmap.asImageBitmap()
 }
