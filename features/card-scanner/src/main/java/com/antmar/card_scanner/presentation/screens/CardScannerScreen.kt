@@ -1,6 +1,7 @@
 package com.antmar.card_scanner.presentation.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.antmar.card_scanner.di.CardScannerComponent
@@ -29,23 +31,23 @@ import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
 import com.antmar.core.ui.ColorPalette
 import com.antmar.local_database.di.DatabaseComponent
+import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.log10
 
 @Composable
 fun CardScannerScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
-    Log.d("myLog", databaseComponent.provideDatabase().toString())
-
     val component = CardScannerComponent::class.create(databaseComponent)
     val viewModel = KIViewModel(component.cardScannerViewModelFactory())
-    Log.d("myLog", viewModel.toString())
 
     var inputStateName by remember { mutableStateOf("") }
-    var inputStateCode by remember { mutableLongStateOf(0L) }
+    var inputStateCode by remember { mutableStateOf("") }
 
     val palette = ColorPalette.Default36
     var selectedColor by remember { mutableLongStateOf(0xFF808080) }
 
-//    val vm = CardScannerComponent::class.create(databaseComponent).cardScannerViewModelFactory().injectViewModel()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -70,11 +72,14 @@ fun CardScannerScreen(databaseComponent: DatabaseComponent, navigator: Navigator
                 singleLine = true
             )
 
-            TextField(modifier = Modifier.fillMaxWidth(),
-                value = inputStateCode.toString(),
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = inputStateCode,
                 onValueChange = { newValue ->
                     if (newValue.all(Char::isDigit)) {
-                        inputStateCode = newValue.toLong()
+                        inputStateCode = if (newValue.isNotEmpty()) {
+                            if (newValue.toLong() != 0L) newValue else ""
+                        } else ""
                     }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -107,12 +112,20 @@ fun CardScannerScreen(databaseComponent: DatabaseComponent, navigator: Navigator
 
             Button(
                 onClick = {
-                    viewModel.insertCard(
-                        name = inputStateName,
-                        code = inputStateCode,
-                        color = selectedColor
-                    )
-                    navigator.navigate(NavRoutes.LIST)
+                    if (inputStateCode.length == 12 || inputStateCode.length == 13) {
+                        viewModel.insertCard(
+                            name = inputStateName,
+                            code = inputStateCode.toLong(),
+                            color = selectedColor
+                        )
+                        navigator.navigate(NavRoutes.LIST)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "number should contain 12 or 13 digits",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -120,6 +133,4 @@ fun CardScannerScreen(databaseComponent: DatabaseComponent, navigator: Navigator
             }
         }
     }
-
-
 }

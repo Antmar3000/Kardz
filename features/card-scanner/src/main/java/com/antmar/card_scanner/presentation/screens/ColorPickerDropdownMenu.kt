@@ -23,9 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.ColorUtils
 
 @Composable
-fun ColorPickerDropdownMenu (
+fun ColorPickerDropdownMenu(
     colors: List<Long>,
     selectedColor: Long?,
     modifier: Modifier,
@@ -33,14 +34,22 @@ fun ColorPickerDropdownMenu (
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Box (
+    val luminance = ColorUtils.calculateLuminance(selectedColor?.toInt() ?: 0xFFFFFFFF.toInt())
+    val isDarkBackground = luminance < 0.5
+
+    Box(
         modifier = modifier
     ) {
-        Button(onClick = { expanded = true },
+        Button(
+            modifier = Modifier.fillMaxWidth(), onClick = { expanded = true },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(selectedColor ?: 0xFFFFFFFF)
-            )) {
-            Text(text = "Select color")
+            )
+        ) {
+            Text(
+                text = "Select color",
+                color = if (isDarkBackground) Color.White else Color.Black
+            )
         }
         DropdownMenu(
             expanded = expanded,
@@ -53,19 +62,20 @@ fun ColorPickerDropdownMenu (
                     .padding(8.dp)
             ) {
                 items(colors) { colorLong ->
-                    Box(modifier = Modifier
-                        .size(32.dp)
-                        .padding(4.dp)
-                        .background(Color(colorLong))
-                        .border(
-                            width = if (colorLong == selectedColor) 2.dp else 1.dp,
-                            color = if (colorLong == selectedColor) Color.Black else Color.Gray,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .clickable {
-                            onColorSelected(colorLong)
-                            expanded = false
-                        }
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .padding(4.dp)
+                            .background(Color(colorLong))
+                            .border(
+                                width = if (colorLong == selectedColor) 2.dp else 1.dp,
+                                color = if (colorLong == selectedColor) Color.Black else Color.Gray,
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .clickable {
+                                onColorSelected(colorLong)
+                                expanded = false
+                            }
                     )
                 }
             }

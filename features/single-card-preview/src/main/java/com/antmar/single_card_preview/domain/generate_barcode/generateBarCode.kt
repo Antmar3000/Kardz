@@ -11,7 +11,7 @@ import androidx.core.graphics.set
 
 fun generateBarcodeBitmap(
     text : String,
-    format: BarcodeFormat = BarcodeFormat.EAN_13,
+    format: BarcodeFormat = BarcodeFormat.CODE_128,
     width : Int = 600,
     height : Int = 300
 ) : ImageBitmap {

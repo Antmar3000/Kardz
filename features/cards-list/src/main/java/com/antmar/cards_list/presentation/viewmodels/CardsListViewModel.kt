@@ -32,7 +32,6 @@ class CardsListViewModel(
         viewModelScope.launch {
             getAllCardsUseCase.invoke().collect {
                 _allCardsListState.value = it
-                Log.d("myLog", "size = ${_allCardsListState.value.size}")
             }
         }
     }
@@ -44,7 +43,6 @@ class CardsListViewModel(
     }
 
     fun sendCardId (id: Int) {
-        Log.d("myLog", "sendId = $id")
         viewModelScope.launch {
             sendIdUseCase(id)
         }

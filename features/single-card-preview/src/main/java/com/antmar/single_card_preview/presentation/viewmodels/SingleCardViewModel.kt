@@ -36,8 +36,8 @@ class SingleCardViewModel(
 
     private fun collectId() {
         viewModelScope.launch {
-            getSharedIdUseCase.invoke().collect {
-                getCardUseCase(it).collect {cardUIEntity ->
+            getSharedIdUseCase.invoke().collect {id ->
+                getCardUseCase(id).collect {cardUIEntity ->
                     _currentCardState.value = cardUIEntity
                 }
             }

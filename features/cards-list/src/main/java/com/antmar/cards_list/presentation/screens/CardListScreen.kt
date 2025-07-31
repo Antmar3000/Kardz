@@ -12,6 +12,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,10 +33,6 @@ import com.antmar.local_database.di.create
 @Composable
 fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
-    Log.d("myLog", databaseComponent.provideDatabase().toString())
-
-//    val vm = CardsListComponent::class.create(databaseComponent).cardsListViewModelFactory().injectViewModel()
-
     val component = CardsListComponent::class.create(databaseComponent)
     val viewModel = KIViewModel(component.cardsListViewModelFactory())
 
@@ -48,13 +47,20 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
     val list = viewModel.allCardsListState.collectAsStateWithLifecycle().value
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(4.dp)
+    ) {
         LazyColumn {
             items(
                 items = list,
                 key = { it.id }
             ) { card ->
-                CardListItem(card, { navigateToCardPreview(card.id) })
+                SwipeToDeleteCardListItem(
+                    card = card,
+                    navigate = { navigateToCardPreview(card.id) },
+                    onSwipe = { viewModel.deleteCard(card.id) })
             }
         }
 
@@ -68,6 +74,4 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
             Icon(Icons.Filled.Add, "FAB_add_card")
         }
     }
-
-
 }
