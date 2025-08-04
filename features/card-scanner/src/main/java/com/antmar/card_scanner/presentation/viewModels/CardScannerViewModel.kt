@@ -15,7 +15,7 @@ class CardScannerViewModel(
 
     fun insertCard(
         name: String,
-        code: Long,
+        code: String,
         color: Long
     ) {
         val card = CardUIEntity(id = 0, name = name, code = code, color = color)

@@ -1,6 +1,5 @@
 package com.antmar.card_scanner.presentation.screens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,12 +30,9 @@ import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
 import com.antmar.core.ui.ColorPalette
 import com.antmar.local_database.di.DatabaseComponent
-import kotlin.math.abs
-import kotlin.math.floor
-import kotlin.math.log10
 
 @Composable
-fun CardScannerScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
+fun CardAdditionScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
     val component = CardScannerComponent::class.create(databaseComponent)
     val viewModel = KIViewModel(component.cardScannerViewModelFactory())
@@ -115,7 +111,7 @@ fun CardScannerScreen(databaseComponent: DatabaseComponent, navigator: Navigator
                     if (inputStateCode.length == 12 || inputStateCode.length == 13) {
                         viewModel.insertCard(
                             name = inputStateName,
-                            code = inputStateCode.toLong(),
+                            code = inputStateCode,
                             color = selectedColor
                         )
                         navigator.navigate(NavRoutes.LIST)

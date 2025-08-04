@@ -1,17 +1,15 @@
 package com.antmar.kardz.presentation.screens
 
-import android.app.Activity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.antmar.card_scanner.presentation.screens.CardScannerScreen
+import com.antmar.card_scanner.presentation.screens.CardAdditionScreen
 import com.antmar.cards_list.presentation.screens.CardListScreen
 import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
@@ -51,7 +49,7 @@ fun MainScreen(databaseComponent: DatabaseComponent) {
             }
 
             composable(route = NavRoutes.SCANNER.route) {
-                CardScannerScreen(databaseComponent, navigator)
+                CardAdditionScreen(databaseComponent, navigator)
             }
         }
     }

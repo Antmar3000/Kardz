@@ -10,13 +10,12 @@ import androidx.core.graphics.set
 
 
 fun generateBarcodeBitmap(
-    text : String,
-    format: BarcodeFormat = BarcodeFormat.CODE_128,
-    width : Int = 600,
-    height : Int = 300
+    info : BarcodeInfo,
+    width : Int = 700,
+    height : Int = 350
 ) : ImageBitmap {
 
-    val bitMatrix = MultiFormatWriter().encode(text, format, width, height)
+    val bitMatrix = MultiFormatWriter().encode(info.code, info.format, width, height)
     val bitmap = createBitmap(width, height, Bitmap.Config.RGB_565)
 
     for (x in 0 until width) {
@@ -27,3 +26,8 @@ fun generateBarcodeBitmap(
 
     return bitmap.asImageBitmap()
 }
+
+data class BarcodeInfo (
+    val code : String,
+    val format : BarcodeFormat
+)

@@ -1,6 +1,7 @@
 package com.antmar.cards_list.presentation.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antmar.cards_list.domain.usecases.DeleteCardUseCase
@@ -24,6 +25,9 @@ class CardsListViewModel(
     private val _allCardsListState = MutableStateFlow<List<CardUIEntity>>(emptyList())
     val allCardsListState get() = _allCardsListState.asStateFlow()
 
+    private val _dialogState = MutableStateFlow(-1)
+    val dialogState get() = _dialogState.asStateFlow()
+
     init {
         collectCards()
     }
@@ -38,6 +42,7 @@ class CardsListViewModel(
 
     fun deleteCard(id : Int) {
         viewModelScope.launch {
+            delay(250)
             deleteCardUseCase(id)
         }
     }
@@ -46,5 +51,9 @@ class CardsListViewModel(
         viewModelScope.launch {
             sendIdUseCase(id)
         }
+    }
+
+    fun toggleDeleteDialog (id : Int) {
+        _dialogState.value = id
     }
 }

@@ -16,5 +16,5 @@ interface EditCardDao {
     suspend fun updateCard (card: CardDBO)
 
     @Query("select * from cards where id = :id")
-    fun getCard(id : Int) : Flow<CardDBO>
+    fun getCard(id : Int) : Flow<CardDBO?>
 }

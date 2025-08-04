@@ -23,7 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.ColorUtils
+import com.antmar.core.ui.getColorBasedOnBackground
 
 @Composable
 fun ColorPickerDropdownMenu(
@@ -33,9 +33,6 @@ fun ColorPickerDropdownMenu(
     onColorSelected: (Long) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-
-    val luminance = ColorUtils.calculateLuminance(selectedColor?.toInt() ?: 0xFFFFFFFF.toInt())
-    val isDarkBackground = luminance < 0.5
 
     Box(
         modifier = modifier
@@ -48,7 +45,7 @@ fun ColorPickerDropdownMenu(
         ) {
             Text(
                 text = "Select color",
-                color = if (isDarkBackground) Color.White else Color.Black
+                color = getColorBasedOnBackground(selectedColor ?: 0xFFFFFFFF)
             )
         }
         DropdownMenu(

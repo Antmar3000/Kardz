@@ -18,8 +18,8 @@ class SingleCardRepositoryImpl(
 
     override suspend fun deleteCard(id: Int) = dao.deleteCard(id)
 
-    override suspend fun getCard(id: Int) : Flow<CardUIEntity> {
-        return dao.getCard(id).map { it.toEntity() }
+    override suspend fun getCard(id: Int) : Flow<CardUIEntity?> {
+        return dao.getCard(id).map { it?.toEntity() }
     }
 
 }

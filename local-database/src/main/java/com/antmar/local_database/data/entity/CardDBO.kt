@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class CardDBO (
     @PrimaryKey(autoGenerate = true) val id : Int = 0,
     val name : String,
-    val code : Long,
+    val code : String,
     val color : Long
 )

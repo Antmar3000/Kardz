@@ -9,6 +9,6 @@ interface SingleCardRepository {
 
     suspend fun deleteCard (id : Int)
 
-    suspend fun getCard (id : Int) : Flow<CardUIEntity>
+    suspend fun getCard (id : Int) : Flow<CardUIEntity?>
 
 }

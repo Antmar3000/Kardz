@@ -10,6 +10,7 @@ import com.antmar.single_card_preview.domain.usecases.EditCardUseCase
 import com.antmar.single_card_preview.domain.usecases.GetCardUseCase
 import com.antmar.single_card_preview.domain.usecases.GetSharedIdUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +35,9 @@ class SingleCardViewModel(
     private val _currentCardState = MutableStateFlow<CardUIEntity?>(null)
     val currentCardState get() = _currentCardState.asStateFlow()
 
+    private val _dialogState = MutableStateFlow(false)
+    val dialogState get() = _dialogState.asStateFlow()
+
     private fun collectId() {
         viewModelScope.launch {
             getSharedIdUseCase.invoke().collect {id ->
@@ -41,6 +45,16 @@ class SingleCardViewModel(
                     _currentCardState.value = cardUIEntity
                 }
             }
+        }
+    }
+
+    fun toggleDeleteDialog () {
+        _dialogState.value = !dialogState.value
+    }
+
+    fun deleteCard (id : Int) {
+        viewModelScope.launch {
+            deleteCardUseCase(id)
         }
     }
 }

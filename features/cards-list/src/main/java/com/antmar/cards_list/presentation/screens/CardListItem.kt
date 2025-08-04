@@ -1,5 +1,8 @@
 package com.antmar.cards_list.presentation.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,17 +26,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.antmar.core.domain.entity.CardUIEntity
-import com.antmar.core.navigation.Navigator
-import java.nio.file.WatchEvent
-import kotlin.math.absoluteValue
+import com.antmar.core.ui.getColorBasedOnBackground
 
 @Composable
 fun CardListItem(card: CardUIEntity, navigate: () -> Unit) {
@@ -61,7 +65,8 @@ fun CardListItem(card: CardUIEntity, navigate: () -> Unit) {
             verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(card.name, fontSize = 40.sp)
+            Text(card.name, fontSize = 40.sp,
+                color = getColorBasedOnBackground(card.color))
         }
     }
 }
@@ -73,12 +78,15 @@ fun SwipeToDeleteCardListItem(
     onSwipe: (Int) -> Unit
 ) {
 
+    var resetSwipe by remember { mutableStateOf(false) }
+
     val threshold = LocalConfiguration.current.screenWidthDp.dp.value * 0.8f
 
     val swipeState = rememberSwipeToDismissBoxState(
         confirmValueChange = { newValue ->
             if (newValue == SwipeToDismissBoxValue.EndToStart) {
                 onSwipe(card.id)
+                resetSwipe = !resetSwipe
                 true
             } else {
                 false
@@ -87,60 +95,52 @@ fun SwipeToDeleteCardListItem(
         positionalThreshold = { threshold }
     )
 
-    LaunchedEffect(swipeState.currentValue) {
-        if (swipeState.currentValue == SwipeToDismissBoxValue.EndToStart) {
-            swipeState.reset()
+    LaunchedEffect(resetSwipe) {
+        swipeState.reset()
+    }
+
+
+    AnimatedVisibility(
+        visible = true,
+        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom)
+    ) {
+
+        SwipeToDismissBox(
+            state = swipeState,
+            enableDismissFromStartToEnd = false,
+            enableDismissFromEndToStart = true,
+            backgroundContent = {
+
+                val alpha = (swipeState.progress * 1.5f).coerceAtMost(1f)
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .border(
+                            2.dp,
+                            MaterialTheme.colorScheme.outline.copy(alpha = alpha),
+                            RoundedCornerShape(16.dp)
+                        ),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Red.copy(alpha = alpha))
+                            .padding(16.dp),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "delete",
+                            tint = Color.White,
+                            modifier = Modifier.padding(end = 16.dp)
+                        )
+                    }
+                }
+            }) {
+            CardListItem(card, navigate)
         }
     }
-
-    SwipeToDismissBox(
-        state = swipeState,
-        enableDismissFromStartToEnd = false,
-        enableDismissFromEndToStart = true,
-        backgroundContent = {
-
-            val alpha = (swipeState.progress * 1.5f).coerceAtMost(1f)
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .border(
-                        2.dp,
-                        MaterialTheme.colorScheme.outline.copy(alpha = alpha),
-                        RoundedCornerShape(16.dp)
-                    ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Red.copy(alpha = alpha))
-                        .padding(16.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "delete",
-                        tint = Color.White,
-                        modifier = Modifier.padding(end = 16.dp)
-                    )
-                }
-            }
-        }) {
-        CardListItem(card, navigate)
-    }
-}
-
-val mockCard = CardUIEntity(
-    1,
-    "LENTA",
-    14424323551L,
-    0xFF808000
-)
-
-@Preview
-@Composable
-fun listitempreview() {
-    CardListItem(mockCard, {})
 }
