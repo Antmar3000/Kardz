@@ -8,7 +8,8 @@ fun CardDBO.toEntity () : CardUIEntity {
         id = this.id,
         name = this.name,
         code = this.code,
-        color = this.color
+        color = this.color,
+        isBarcode = this.isBarcode
     )
 }
 

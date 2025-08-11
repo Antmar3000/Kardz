@@ -1,4 +1,4 @@
-package com.antmar.card_scanner.presentation.screens
+package com.antmar.card_scanner.presentation.utils
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.antmar.core.ui.getColorBasedOnBackground
@@ -38,9 +41,11 @@ fun ColorPickerDropdownMenu(
         modifier = modifier
     ) {
         Button(
-            modifier = Modifier.fillMaxWidth(), onClick = { expanded = true },
+            modifier = Modifier
+                .fillMaxWidth(),
+            onClick = { expanded = true },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(selectedColor ?: 0xFFFFFFFF)
+                containerColor = Color(selectedColor ?: 0xFFFFFFFF),
             )
         ) {
             Text(
@@ -61,9 +66,9 @@ fun ColorPickerDropdownMenu(
                 items(colors) { colorLong ->
                     Box(
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(36.dp)
                             .padding(4.dp)
-                            .background(Color(colorLong))
+                            .background(Color(colorLong), shape = RoundedCornerShape(4.dp))
                             .border(
                                 width = if (colorLong == selectedColor) 2.dp else 1.dp,
                                 color = if (colorLong == selectedColor) Color.Black else Color.Gray,

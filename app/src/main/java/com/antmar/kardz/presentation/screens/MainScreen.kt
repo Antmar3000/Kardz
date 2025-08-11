@@ -1,7 +1,9 @@
 package com.antmar.kardz.presentation.screens
 
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -15,6 +17,7 @@ import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
 import com.antmar.local_database.di.DatabaseComponent
 import com.antmar.single_card_preview.presentation.screens.BarcodeScreen
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun MainScreen(databaseComponent: DatabaseComponent) {
@@ -33,7 +36,10 @@ fun MainScreen(databaseComponent: DatabaseComponent) {
             }
         }
     }
-    Scaffold { padding ->
+
+    Scaffold(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+    ) { padding ->
         NavHost(
             navController,
             startDestination = NavRoutes.LIST.route,

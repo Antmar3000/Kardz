@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
@@ -47,20 +48,12 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
     val component = CardsListComponent::class.create(databaseComponent)
     val viewModel = KIViewModel(component.cardsListViewModelFactory())
 
-    fun navigateToCardPreview(id: Int) {
-        viewModel.sendCardId(id)
-        navigator.navigate(NavRoutes.BARCODE)
-    }
-
-    fun navigateToScannerScreen() {
-        navigator.navigate(NavRoutes.SCANNER)
-    }
-
     val list = viewModel.allCardsListState.collectAsStateWithLifecycle().value
 
     val dialogState = viewModel.dialogState.collectAsStateWithLifecycle().value
 
     if (dialogState != -1) {
+
         HorizontalExpandDialog(onDismissRequest = { viewModel.toggleDeleteDialog(-1) }) {
             Column(
                 modifier = Modifier
@@ -80,7 +73,7 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(100.dp)
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     Icon(
                         imageVector = Icons.Default.Check,
@@ -89,9 +82,11 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
                             .clickable(
                                 onClick = {
                                     viewModel.deleteCard(dialogState)
-                                    viewModel.toggleDeleteDialog(-1) }
+                                    viewModel.toggleDeleteDialog(-1)
+                                }
                             )
-                            .size(40.dp))
+                            .size(40.dp),
+                        tint = Color.DarkGray)
 
                     Icon(
                         imageVector = Icons.Default.Clear,
@@ -100,7 +95,8 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
                             .clickable(
                                 onClick = { viewModel.toggleDeleteDialog(-1) }
                             )
-                            .size(40.dp))
+                            .size(40.dp),
+                        tint = Color.DarkGray)
                 }
             }
         }
@@ -119,7 +115,10 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
             ) { card ->
                 SwipeToDeleteCardListItem(
                     card = card,
-                    navigate = { navigateToCardPreview(card.id) },
+                    navigate = {
+                        viewModel.sendCardId(card.id)
+                        navigator.navigate(NavRoutes.BARCODE)
+                    },
                     onSwipe = { viewModel.toggleDeleteDialog(card.id) })
             }
         }
@@ -128,8 +127,10 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(8.dp),
-            onClick = { navigateToScannerScreen() },
-            shape = CircleShape
+            onClick = { navigator.navigate(NavRoutes.SCANNER) },
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = Color.White
         ) {
             Icon(Icons.Filled.Add, "FAB_add_card")
         }

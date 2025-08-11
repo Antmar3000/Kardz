@@ -1,6 +1,5 @@
 package com.antmar.local_database.data.shared_data
 
-import android.util.Log
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import me.tatarka.inject.annotations.Inject
@@ -13,6 +12,5 @@ class SharedDataManager {
 
     suspend fun updateSharedId(id : Int) {
         _sharedId.emit(id)
-        Log.d("myLog", "sharedManagerEmit = $id")
     }
 }

@@ -7,6 +7,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
+import com.google.zxing.common.BitMatrix
 
 
 fun generateBarcodeBitmap(
@@ -31,3 +32,31 @@ data class BarcodeInfo (
     val code : String,
     val format : BarcodeFormat
 )
+
+fun generateQrCodeBitmap(
+    info: BarcodeInfo,
+    size: Int = 450,
+    margin: Int = 1
+): ImageBitmap {
+
+    val bitMatrix: BitMatrix = MultiFormatWriter().encode(
+        info.code,
+        BarcodeFormat.QR_CODE,
+        size,
+        size,
+        mapOf(
+            com.google.zxing.EncodeHintType.MARGIN to margin,
+            com.google.zxing.EncodeHintType.CHARACTER_SET to "UTF-8"
+        )
+    )
+
+
+    val bitmap = createBitmap(size, size)
+    for (x in 0 until size) {
+        for (y in 0 until size) {
+            bitmap[x, y] = if (bitMatrix.get(x, y)) 0xFF000000.toInt() else 0xFFFFFFFF.toInt()
+        }
+    }
+
+    return bitmap.asImageBitmap()
+}

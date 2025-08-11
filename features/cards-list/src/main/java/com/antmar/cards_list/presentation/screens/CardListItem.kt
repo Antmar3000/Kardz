@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
@@ -50,7 +51,7 @@ fun CardListItem(card: CardUIEntity, navigate: () -> Unit) {
             .padding(8.dp)
             .border(
                 width = 2.dp,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(16.dp)
             ),
         colors = CardDefaults.cardColors(
@@ -111,18 +112,14 @@ fun SwipeToDeleteCardListItem(
             enableDismissFromEndToStart = true,
             backgroundContent = {
 
-                val alpha = (swipeState.progress * 1.5f).coerceAtMost(1f)
+                val alpha = (swipeState.progress * 1.2f).coerceAtMost(1f)
 
-                Card(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(Color.Transparent)
                         .padding(8.dp)
-                        .border(
-                            2.dp,
-                            MaterialTheme.colorScheme.outline.copy(alpha = alpha),
-                            RoundedCornerShape(16.dp)
-                        ),
-                    shape = RoundedCornerShape(16.dp)
+                        .clip(RoundedCornerShape(16.dp))
                 ) {
                     Box(
                         modifier = Modifier

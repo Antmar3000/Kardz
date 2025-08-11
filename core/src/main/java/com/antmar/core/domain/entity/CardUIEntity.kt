@@ -4,5 +4,6 @@ data class CardUIEntity (
     val id : Int,
     val name : String,
     val code : String,
-    val color : Long
+    val color : Long,
+    val isBarcode : Boolean
 )

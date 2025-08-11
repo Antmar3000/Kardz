@@ -7,6 +7,7 @@ fun CardUIEntity.toDBOInsert() : CardDBO {
     return CardDBO (
         name = this.name,
         code = this.code,
-        color = this.color
+        color = this.color,
+        isBarcode = this.isBarcode
     )
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -42,8 +43,8 @@ import com.antmar.single_card_preview.di.SingleCardComponent
 import com.antmar.single_card_preview.di.create
 import com.antmar.single_card_preview.domain.generate_barcode.BarcodeInfo
 import com.antmar.single_card_preview.domain.generate_barcode.generateBarcodeBitmap
+import com.antmar.single_card_preview.domain.generate_barcode.generateQrCodeBitmap
 import com.google.zxing.BarcodeFormat
-import kotlinx.coroutines.delay
 
 @Composable
 fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
@@ -84,7 +85,7 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(100.dp)
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     Icon(
                         imageVector = Icons.Default.Check,
@@ -145,7 +146,8 @@ fun CurrentCardUI(
             ) {
 
                 Row(
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.padding(top = 8.dp)
                 ) {
 
                     Icon(
@@ -188,8 +190,8 @@ fun CurrentCardUI(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(300.dp)
-                        .padding(horizontal = 16.dp),
+                        .padding(16.dp)
+                        .weight(1f),
                     shape = RoundedCornerShape(24.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.White
@@ -197,13 +199,14 @@ fun CurrentCardUI(
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxWidth(),
                         verticalArrangement = Arrangement.SpaceAround,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
                         Image(
-                            bitmap = generateBarcodeBitmap(codeInfo),
+                            bitmap = if (card.isBarcode) generateBarcodeBitmap(codeInfo)
+                            else generateQrCodeBitmap(codeInfo),
                             contentDescription = "generateBitmap",
                             modifier = Modifier
                                 .fillMaxSize()

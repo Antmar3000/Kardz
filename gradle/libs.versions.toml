@@ -17,6 +17,7 @@ ksp = "2.2.0-2.0.2"
 appcompat = "1.7.1"
 material = "1.12.0"
 zxing = "3.5.3"
+accompanistUI = "0.36.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +51,8 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 
 zxing = { group = "com.google.zxing", name = "zxing-parent", version.ref = "zxing"}
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing"}
+
+accompanist-systemui = {group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanistUI"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

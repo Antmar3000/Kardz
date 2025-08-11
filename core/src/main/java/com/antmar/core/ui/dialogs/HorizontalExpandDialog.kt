@@ -55,7 +55,7 @@ fun HorizontalExpandDialog(
         color = if (isSystemInDarkTheme()) {
             MaterialTheme.colorScheme.surfaceVariant
         } else {
-            MaterialTheme.colorScheme.surface
+            MaterialTheme.colorScheme.onBackground
         },
     ),
     content: @Composable BoxScope.() -> Unit = {},

@@ -10,6 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -20,11 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.antmar.card_scanner.di.CardScannerComponent
 import com.antmar.card_scanner.di.create
+import com.antmar.card_scanner.presentation.utils.ColorPickerDropdownMenu
+import com.antmar.card_scanner.presentation.utils.RoundedTextField
 import com.antmar.core.di.KIViewModel
 import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
@@ -37,11 +44,12 @@ fun CardAdditionScreen(databaseComponent: DatabaseComponent, navigator: Navigato
     val component = CardScannerComponent::class.create(databaseComponent)
     val viewModel = KIViewModel(component.cardScannerViewModelFactory())
 
-    var inputStateName by remember { mutableStateOf("") }
-    var inputStateCode by remember { mutableStateOf("") }
+    val inputStateName = remember { mutableStateOf("") }
+    val inputStateCode = remember { mutableStateOf("") }
+    var inputStateIsBarcode by remember { mutableStateOf(true) }
 
     val palette = ColorPalette.Default36
-    var selectedColor by remember { mutableLongStateOf(0xFF808080) }
+    var selectedColor by remember { mutableLongStateOf(ColorPalette.Default36.random()) }
 
     val context = LocalContext.current
 
@@ -58,44 +66,34 @@ fun CardAdditionScreen(databaseComponent: DatabaseComponent, navigator: Navigato
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = inputStateName,
-                onValueChange = { inputStateName = it },
-                placeholder = {
-                    Text("введите название карты")
-                },
-                singleLine = true
-            )
+            RoundedTextField("input name", inputStateName, false)
 
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = inputStateCode,
-                onValueChange = { newValue ->
-                    if (newValue.all(Char::isDigit)) {
-                        inputStateCode = if (newValue.isNotEmpty()) {
-                            if (newValue.toLong() != 0L) newValue else ""
-                        } else ""
-                    }
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true,
-                placeholder = {
-                    Text("введите штрих-код")
-                }
-            )
-
+            RoundedTextField("input card number", inputStateCode, inputStateIsBarcode)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(20.dp)
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(
-                    onClick = {},
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Scan")
-                }
+
+                Switch(
+                    checked = inputStateIsBarcode,
+                    onCheckedChange = {
+                        inputStateIsBarcode = it
+                        inputStateCode.value = ""},
+                    colors = SwitchDefaults.colors(
+                        checkedTrackColor = MaterialTheme.colorScheme.onBackground,
+                        uncheckedThumbColor = MaterialTheme.colorScheme.surface
+                    )
+                )
+
+                Text(
+                    text = if (inputStateIsBarcode) "barcode" else "QR-code",
+                    color = Color.White,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 16.dp)
+                )
 
                 ColorPickerDropdownMenu(
                     colors = palette,
@@ -108,24 +106,47 @@ fun CardAdditionScreen(databaseComponent: DatabaseComponent, navigator: Navigato
 
             Button(
                 onClick = {
-                    if (inputStateCode.length == 12 || inputStateCode.length == 13) {
-                        viewModel.insertCard(
-                            name = inputStateName,
-                            code = inputStateCode,
-                            color = selectedColor
-                        )
-                        navigator.navigate(NavRoutes.LIST)
+                    if (inputStateCode.value.isNotEmpty()) {
+                        if (inputStateIsBarcode) {
+                            if (inputStateCode.value.length == 12 || inputStateCode.value.length == 13) {
+                                viewModel.insertCard(
+                                    name = inputStateName.value,
+                                    code = inputStateCode.value,
+                                    color = selectedColor,
+                                    isBarcode = inputStateIsBarcode
+                                )
+                                navigator.navigate(NavRoutes.LIST)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "barcode number should contain 12 or 13 digits",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } else {
+                            viewModel.insertCard(
+                                name = inputStateName.value,
+                                code = inputStateCode.value,
+                                color = selectedColor,
+                                isBarcode = inputStateIsBarcode
+                            )
+                            navigator.navigate(NavRoutes.LIST)
+                        }
                     } else {
                         Toast.makeText(
                             context,
-                            "number should contain 12 or 13 digits",
+                            "code should not be empty",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    contentColor = Color.DarkGray
+                )
             ) {
-                Text("добавить карту")
+                Text("add card")
             }
         }
     }

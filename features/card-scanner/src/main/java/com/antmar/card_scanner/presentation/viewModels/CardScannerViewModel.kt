@@ -16,9 +16,10 @@ class CardScannerViewModel(
     fun insertCard(
         name: String,
         code: String,
-        color: Long
+        color: Long,
+        isBarcode : Boolean
     ) {
-        val card = CardUIEntity(id = 0, name = name, code = code, color = color)
+        val card = CardUIEntity(id = 0, name = name, code = code, color = color, isBarcode = isBarcode)
         viewModelScope.launch {
             insertUseCase(card)
         }
