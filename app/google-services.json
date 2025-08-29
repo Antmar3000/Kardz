@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "855280270287",
+    "project_id": "kardz-8cc6d",
+    "storage_bucket": "kardz-8cc6d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855280270287:android:177e12c990303a56d0b0ba",
+        "android_client_info": {
+          "package_name": "com.antmar.kardz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtIxuaGuFffe-ItPgiBRNuF-BCcpxl6P4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

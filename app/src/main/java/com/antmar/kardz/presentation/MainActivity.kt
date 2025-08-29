@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalView
 import com.antmar.kardz.App
 import com.antmar.kardz.presentation.screens.MainScreen
 import com.antmar.kardz.presentation.theme.KardzTheme
+import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

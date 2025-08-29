@@ -56,12 +56,10 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
     val currentCard = viewModel.currentCardState.collectAsStateWithLifecycle().value
     val dialogState = viewModel.dialogState.collectAsStateWithLifecycle().value
 
-    fun navigateBack() = navigator.popBackStack()
-
     fun deleteCard() {
         viewModel.toggleDeleteDialog()
         viewModel.deleteCard(currentCard?.id ?: 0)
-        navigateBack()
+        navigator.popBackStack()
     }
 
     if (dialogState) {
@@ -94,7 +92,8 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
                             .clickable(
                                 onClick = { deleteCard() }
                             )
-                            .size(40.dp))
+                            .size(40.dp),
+                        tint = Color.DarkGray)
 
                     Icon(
                         imageVector = Icons.Default.Clear,
@@ -103,13 +102,14 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
                             .clickable(
                                 onClick = { viewModel.toggleDeleteDialog() }
                             )
-                            .size(40.dp))
+                            .size(40.dp),
+                        tint = Color.DarkGray)
                 }
             }
         }
     }
 
-    CurrentCardUI(currentCard, { navigateBack() }, { viewModel.toggleDeleteDialog() })
+    CurrentCardUI(currentCard, { navigator.popBackStack() }, viewModel::toggleDeleteDialog )
 
 }
 
