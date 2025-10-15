@@ -28,6 +28,7 @@ import com.antmar.card_scanner.presentation.screens.CardAdditionScreen
 import com.antmar.cards_list.presentation.screens.CardListScreen
 import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
+import com.antmar.kardz.App
 import com.antmar.local_database.di.DatabaseComponent
 import com.antmar.single_card_preview.presentation.screens.BarcodeScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -36,11 +37,13 @@ import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.delay
 
 @Composable
-fun MainScreen(databaseComponent: DatabaseComponent) {
+fun MainScreen() {
 
     val navController = rememberNavController()
     val activity = LocalActivity.current
     val context = LocalContext.current
+
+    val databaseComponent = (context.applicationContext as App).databaseComponent
 
     val navigator = remember(navController) {
         object : Navigator {

@@ -2,6 +2,8 @@ package com.antmar.card_scanner.di
 
 import com.antmar.card_scanner.data.repository.CardScannerRepositoryImpl
 import com.antmar.card_scanner.domain.CardScannerRepository
+import com.antmar.card_scanner.domain.usecases.GetCardUseCase
+import com.antmar.card_scanner.domain.usecases.GetSharedIdUseCase
 import com.antmar.card_scanner.domain.usecases.InsertCardUseCase
 import com.antmar.card_scanner.presentation.viewModels.CardScannerViewModel
 import com.antmar.local_database.di.DatabaseComponent
@@ -25,6 +27,9 @@ abstract class CardScannerComponent(
     fun provideRepository (impl : CardScannerRepositoryImpl) : CardScannerRepository = impl
 
     abstract fun getInsertCardUseCase () : InsertCardUseCase
+
+    abstract fun getGetCardUseCase () : GetCardUseCase
+    abstract fun getSharedIdUseCase () : GetSharedIdUseCase
 
     abstract fun cardScannerViewModelFactory() : () -> CardScannerViewModel
 }

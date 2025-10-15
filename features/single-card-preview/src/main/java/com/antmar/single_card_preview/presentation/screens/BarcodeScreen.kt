@@ -1,5 +1,8 @@
 package com.antmar.single_card_preview.presentation.screens
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,21 +14,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +35,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.antmar.core.di.KIViewModel
 import com.antmar.core.domain.entity.CardUIEntity
+import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
+import com.antmar.core.ui.dialogs.DeleteCardDialogContent
 import com.antmar.core.ui.dialogs.HorizontalExpandDialog
 import com.antmar.core.ui.getColorBasedOnBackground
 import com.antmar.local_database.di.DatabaseComponent
@@ -46,6 +48,7 @@ import com.antmar.single_card_preview.domain.generate_barcode.generateBarcodeBit
 import com.antmar.single_card_preview.domain.generate_barcode.generateQrCodeBitmap
 import com.google.zxing.BarcodeFormat
 
+@SuppressLint("SourceLockedOrientationActivity")
 @Composable
 fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
@@ -62,54 +65,34 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
         navigator.popBackStack()
     }
 
-    if (dialogState) {
-        HorizontalExpandDialog(onDismissRequest = { viewModel.toggleDeleteDialog() }) {
+    val activity = LocalActivity.current
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                Text(
-                    "Delete card?",
-                    color = Color.DarkGray,
-                    fontSize = 24.sp
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "do_delete",
-                        modifier = Modifier
-                            .clickable(
-                                onClick = { deleteCard() }
-                            )
-                            .size(40.dp),
-                        tint = Color.DarkGray)
-
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "do_not_delete",
-                        modifier = Modifier
-                            .clickable(
-                                onClick = { viewModel.toggleDeleteDialog() }
-                            )
-                            .size(40.dp),
-                        tint = Color.DarkGray)
-                }
-            }
+    DisposableEffect(Unit) {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        onDispose {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 
-    CurrentCardUI(currentCard, { navigator.popBackStack() }, viewModel::toggleDeleteDialog )
+    if (dialogState) {
+        HorizontalExpandDialog(onDismissRequest = { viewModel.toggleDeleteDialog() }) {
+            DeleteCardDialogContent(
+                onConfirm = { deleteCard() },
+                onCancel = { viewModel.toggleDeleteDialog() }
+            )
+        }
+    }
+
+    CurrentCardUI(
+        currentCard,
+        { navigator.popBackStack() },
+        viewModel::toggleDeleteDialog,
+        {
+            if (currentCard != null) {
+                viewModel.sendCardId(currentCard.id)
+                navigator.navigate(NavRoutes.SCANNER)
+            }
+        })
 
 }
 
@@ -117,7 +100,8 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 fun CurrentCardUI(
     card: CardUIEntity?,
     onCloseClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit
 ) {
 
     Card(
@@ -147,6 +131,7 @@ fun CurrentCardUI(
 
                 Row(
                     horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(top = 8.dp)
                 ) {
 
@@ -157,13 +142,26 @@ fun CurrentCardUI(
                             .clickable(
                                 onClick = onDeleteClick
                             )
-                            .size(60.dp)
+                            .size(40.dp)
                             .padding(start = 12.dp),
                         tint = getColorBasedOnBackground(card.color)
 
                     )
 
-                    Spacer(modifier = Modifier.weight(8f))
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Icon(
+                        imageVector = Icons.Rounded.Edit,
+                        contentDescription = "edit_icon",
+                        modifier = Modifier
+                            .clickable(
+                                onClick = onEditClick
+                            )
+                            .size(30.dp),
+                        tint = getColorBasedOnBackground(card.color)
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
 
                     Icon(
                         imageVector = Icons.Default.Close,

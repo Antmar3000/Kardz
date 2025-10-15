@@ -1,6 +1,9 @@
 package com.antmar.card_scanner.presentation.screens
 
+import android.content.pm.ActivityInfo
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +20,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.antmar.card_scanner.di.CardScannerComponent
 import com.antmar.card_scanner.di.create
 import com.antmar.card_scanner.presentation.utils.ColorPickerDropdownMenu
@@ -43,6 +48,8 @@ fun CardAdditionScreen(databaseComponent: DatabaseComponent, navigator: Navigato
 
     val component = CardScannerComponent::class.create(databaseComponent)
     val viewModel = KIViewModel(component.cardScannerViewModelFactory())
+
+    val currentCard = viewModel.currentCardState.collectAsStateWithLifecycle().value
 
     val inputStateName = remember { mutableStateOf("") }
     val inputStateCode = remember { mutableStateOf("") }

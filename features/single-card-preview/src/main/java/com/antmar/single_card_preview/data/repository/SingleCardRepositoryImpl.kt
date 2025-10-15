@@ -14,8 +14,6 @@ class SingleCardRepositoryImpl(
     private val dao: EditCardDao
 ) : SingleCardRepository {
 
-    override suspend fun updateCard(card: CardUIEntity) = dao.updateCard(card.toDBO())
-
     override suspend fun deleteCard(id: Int) = dao.deleteCard(id)
 
     override suspend fun getCard(id: Int) : Flow<CardUIEntity?> {

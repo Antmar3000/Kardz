@@ -1,6 +1,5 @@
-package com.antmar.single_card_preview.domain.usecases
+package com.antmar.card_scanner.domain.usecases
 
-import android.util.Log
 import com.antmar.local_database.data.shared_data.SharedDataManager
 import kotlinx.coroutines.flow.SharedFlow
 import me.tatarka.inject.annotations.Inject
@@ -9,7 +8,6 @@ import me.tatarka.inject.annotations.Inject
 class GetSharedIdUseCase (
     private val sharedDataManager: SharedDataManager
 ) {
+
     operator fun invoke() : SharedFlow<Int> = sharedDataManager.sharedId
-
-
 }

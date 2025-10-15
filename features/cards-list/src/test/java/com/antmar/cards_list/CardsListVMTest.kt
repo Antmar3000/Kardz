@@ -21,6 +21,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.Assert.*
+import kotlin.random.Random
 
 @ExperimentalCoroutinesApi
 class CardsListVMTest {
@@ -64,5 +65,19 @@ class CardsListVMTest {
         }
 
         coVerify { getAllCardsUseCaseMock.invoke() }
+    }
+
+    @Test
+    fun toggleDialogShouldChangeState() {
+
+        viewModel =
+            CardsListViewModel(getAllCardsUseCaseMock,
+                deleteCardUseCaseMock,
+                sendIdUseCaseMock)
+
+        val mockId = Random.nextInt(2)
+        viewModel.toggleDeleteDialog(mockId)
+
+        assertEquals(viewModel.dialogState.value, mockId)
     }
 }

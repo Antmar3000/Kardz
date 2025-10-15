@@ -1,5 +1,7 @@
 package com.antmar.cards_list.presentation.screens
 
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +41,7 @@ import com.antmar.cards_list.di.create
 import com.antmar.core.di.KIViewModel
 import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
+import com.antmar.core.ui.dialogs.DeleteCardDialogContent
 import com.antmar.core.ui.dialogs.HorizontalExpandDialog
 import com.antmar.local_database.di.DatabaseComponent
 
@@ -52,53 +55,23 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
     val dialogState = viewModel.dialogState.collectAsStateWithLifecycle().value
 
+    val activity = LocalActivity.current
+    BackHandler (enabled = true) {
+        activity?.finish()
+    }
+
+    fun deleteCard() {
+        viewModel.deleteCard(dialogState)
+        viewModel.toggleDeleteDialog(-1)
+    }
+
     if (dialogState != -1) {
 
         HorizontalExpandDialog(onDismissRequest = { viewModel.toggleDeleteDialog(-1) }) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                Text(
-                    "Delete card?",
-                    color = Color.DarkGray,
-                    fontSize = 24.sp
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "do_delete",
-                        modifier = Modifier
-                            .clickable(
-                                onClick = {
-                                    viewModel.deleteCard(dialogState)
-                                    viewModel.toggleDeleteDialog(-1)
-                                }
-                            )
-                            .size(40.dp),
-                        tint = Color.DarkGray)
-
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "do_not_delete",
-                        modifier = Modifier
-                            .clickable(
-                                onClick = { viewModel.toggleDeleteDialog(-1) }
-                            )
-                            .size(40.dp),
-                        tint = Color.DarkGray)
-                }
-            }
+            DeleteCardDialogContent(
+                onConfirm = { deleteCard() },
+                onCancel = { viewModel.toggleDeleteDialog(-1) }
+            )
         }
     }
 

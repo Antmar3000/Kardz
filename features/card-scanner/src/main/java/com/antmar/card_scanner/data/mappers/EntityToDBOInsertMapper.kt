@@ -11,3 +11,13 @@ fun CardUIEntity.toDBOInsert() : CardDBO {
         isBarcode = this.isBarcode
     )
 }
+
+fun CardDBO.toEntity() : CardUIEntity {
+    return CardUIEntity (
+        id = this.id,
+        name = this.name,
+        code = this.code,
+        color = this.color,
+        isBarcode = this.isBarcode
+    )
+}

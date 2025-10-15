@@ -1,5 +1,7 @@
 package com.antmar.kardz.presentation
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -22,11 +24,14 @@ import com.antmar.kardz.presentation.theme.KardzTheme
 import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         setContent {
             KardzTheme {
-
                 enableEdgeToEdge(
                     statusBarStyle = SystemBarStyle.dark(
                         MaterialTheme.colorScheme.background.toArgb(),
@@ -36,10 +41,7 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
-                val databaseComponent =
-                    (LocalContext.current.applicationContext as App).databaseComponent
-
-                MainScreen(databaseComponent)
+                MainScreen()
 
             }
         }

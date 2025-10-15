@@ -59,7 +59,6 @@ zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing"}
 
 accompanist-systemui = {group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanistUI"}
 
-
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk"}
 mockk-agent = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "mockk" }
 
