@@ -2,6 +2,7 @@ package com.antmar.single_card_preview.presentation.screens
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,6 +68,7 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
     }
 
     val activity = LocalActivity.current
+    val orientation = LocalConfiguration.current.orientation
 
     DisposableEffect(Unit) {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -92,7 +95,9 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
                 viewModel.sendCardId(currentCard.id)
                 navigator.navigate(NavRoutes.SCANNER)
             }
-        })
+        },
+        orientation == Configuration.ORIENTATION_PORTRAIT
+    )
 
 }
 
@@ -101,7 +106,8 @@ fun CurrentCardUI(
     card: CardUIEntity?,
     onCloseClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    isPortrait: Boolean
 ) {
 
     Card(
@@ -123,104 +129,15 @@ fun CurrentCardUI(
                 }
             )
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            BarcodeContentWithOrientation(
+                card,
+                onCloseClick,
+                onDeleteClick,
+                onEditClick,
+                codeInfo,
+                isPortrait
+            )
 
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "delete_icon",
-                        modifier = Modifier
-                            .clickable(
-                                onClick = onDeleteClick
-                            )
-                            .size(40.dp)
-                            .padding(start = 12.dp),
-                        tint = getColorBasedOnBackground(card.color)
-
-                    )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Icon(
-                        imageVector = Icons.Rounded.Edit,
-                        contentDescription = "edit_icon",
-                        modifier = Modifier
-                            .clickable(
-                                onClick = onEditClick
-                            )
-                            .size(30.dp),
-                        tint = getColorBasedOnBackground(card.color)
-                    )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        "close_icon",
-                        modifier = Modifier
-                            .clickable(
-                                onClick = onCloseClick
-                            )
-                            .size(60.dp)
-                            .padding(end = 12.dp),
-                        tint = getColorBasedOnBackground(card.color)
-                    )
-                }
-
-                Text(
-                    modifier = Modifier.padding(top = 24.dp),
-                    text = card.name,
-                    fontSize = 40.sp,
-                    style = TextStyle(
-                        color = getColorBasedOnBackground(card.color)
-                    )
-                )
-
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .weight(1f),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.SpaceAround,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        Image(
-                            bitmap = if (card.isBarcode) generateBarcodeBitmap(codeInfo)
-                            else generateQrCodeBitmap(codeInfo),
-                            contentDescription = "generateBitmap",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .weight(3f)
-                        )
-
-                        Text(
-                            modifier = Modifier.weight(1f),
-                            text = card.code.formatGrouped(),
-                            fontSize = 32.sp
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(120.dp))
-            }
         } else {
             CircularProgressIndicator()
         }
