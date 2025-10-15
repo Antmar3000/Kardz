@@ -7,8 +7,8 @@ import com.antmar.single_card_preview.domain.SingleCardRepository
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class SendCardUseCase (
+class SendCardUseCase(
     private val sharedDataManager: SharedDataManager
 ) {
-    suspend operator fun invoke (id : Int) = sharedDataManager.updateSharedId(id)
+    suspend operator fun invoke(id: Int) = sharedDataManager.updateEditCardId(id)
 }

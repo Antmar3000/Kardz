@@ -18,17 +18,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import com.antmar.core.ui.dialogs.setPortrait
 import com.antmar.kardz.App
 import com.antmar.kardz.presentation.screens.MainScreen
 import com.antmar.kardz.presentation.theme.KardzTheme
 import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        setPortrait(this)
 
         setContent {
             KardzTheme {

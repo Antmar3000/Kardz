@@ -17,7 +17,7 @@ class SingleCardViewModel(
     private val deleteCardUseCase: DeleteCardUseCase,
     private val sendCardUseCase: SendCardUseCase,
     private val getCardUseCase: GetCardUseCase,
-    private val getSharedIdUseCase : GetSharedIdUseCase
+    private val getSharedIdUseCase: GetSharedIdUseCase
 ) : ViewModel() {
 
     init {
@@ -32,25 +32,25 @@ class SingleCardViewModel(
 
     private fun collectId() {
         viewModelScope.launch {
-            getSharedIdUseCase.invoke().collect {id ->
-                getCardUseCase(id).collect {cardUIEntity ->
+            getSharedIdUseCase.invoke().collect { id ->
+                getCardUseCase(id).collect { cardUIEntity ->
                     _currentCardState.value = cardUIEntity
                 }
             }
         }
     }
 
-    fun toggleDeleteDialog () {
+    fun toggleDeleteDialog() {
         _dialogState.value = !dialogState.value
     }
 
-    fun deleteCard (id : Int) {
+    fun deleteCard(id: Int) {
         viewModelScope.launch {
             deleteCardUseCase(id)
         }
     }
 
-    fun sendCardId ( id: Int) {
+    fun sendCardId(id: Int) {
         viewModelScope.launch {
             sendCardUseCase(id)
         }

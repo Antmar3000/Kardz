@@ -97,11 +97,6 @@ fun MainScreen() {
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         hasNotificationPermission = isGranted
-        if (isGranted) {
-
-        } else {
-            Toast.makeText(context, "Notifications disabled", Toast.LENGTH_SHORT).show()
-        }
     }
 
     LaunchedEffect(hasNotificationPermission) {
@@ -123,7 +118,9 @@ fun MainScreen() {
 
 
         } else {
-            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
     }
 

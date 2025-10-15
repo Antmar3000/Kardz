@@ -2,6 +2,7 @@ package com.antmar.card_scanner.data.repository
 
 import android.util.Log
 import com.antmar.card_scanner.data.mappers.toDBOInsert
+import com.antmar.card_scanner.data.mappers.toDBOUpdate
 import com.antmar.card_scanner.data.mappers.toEntity
 import com.antmar.card_scanner.domain.CardScannerRepository
 import com.antmar.core.domain.entity.CardUIEntity
@@ -20,8 +21,8 @@ class CardScannerRepositoryImpl (
         dao.insertCard(card.toDBOInsert())
     }
 
-    override suspend fun updateCard(card: CardDBO) {
-        dao.updateCard(card)
+    override suspend fun updateCard(card: CardUIEntity) {
+        dao.updateCard(card.toDBOUpdate())
     }
 
     override suspend fun getCard(id: Int) : Flow<CardUIEntity?> {

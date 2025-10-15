@@ -5,6 +5,7 @@ import com.antmar.card_scanner.domain.CardScannerRepository
 import com.antmar.card_scanner.domain.usecases.GetCardUseCase
 import com.antmar.card_scanner.domain.usecases.GetSharedIdUseCase
 import com.antmar.card_scanner.domain.usecases.InsertCardUseCase
+import com.antmar.card_scanner.domain.usecases.UpdateCardUseCase
 import com.antmar.card_scanner.presentation.viewModels.CardScannerViewModel
 import com.antmar.local_database.di.DatabaseComponent
 import me.tatarka.inject.annotations.Component
@@ -24,12 +25,13 @@ abstract class CardScannerComponent(
 
     @CardScannerScope
     @Provides
-    fun provideRepository (impl : CardScannerRepositoryImpl) : CardScannerRepository = impl
+    fun provideRepository(impl: CardScannerRepositoryImpl): CardScannerRepository = impl
 
-    abstract fun getInsertCardUseCase () : InsertCardUseCase
+    abstract fun getInsertCardUseCase(): InsertCardUseCase
 
-    abstract fun getGetCardUseCase () : GetCardUseCase
-    abstract fun getSharedIdUseCase () : GetSharedIdUseCase
+    abstract fun getUpdateCardUseCase(): UpdateCardUseCase
+    abstract fun getGetCardUseCase(): GetCardUseCase
+    abstract fun getSharedIdUseCase(): GetSharedIdUseCase
 
-    abstract fun cardScannerViewModelFactory() : () -> CardScannerViewModel
+    abstract fun cardScannerViewModelFactory(): () -> CardScannerViewModel
 }

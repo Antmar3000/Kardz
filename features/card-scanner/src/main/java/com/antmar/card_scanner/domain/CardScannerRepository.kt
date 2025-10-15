@@ -8,7 +8,7 @@ interface CardScannerRepository {
 
     suspend fun insertCard (card : CardUIEntity)
 
-    suspend fun updateCard (card : CardDBO)
+    suspend fun updateCard (card : CardUIEntity)
 
     suspend fun getCard (id : Int) : Flow<CardUIEntity?>
 }

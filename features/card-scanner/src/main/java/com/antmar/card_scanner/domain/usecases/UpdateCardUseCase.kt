@@ -1,24 +1,23 @@
 package com.antmar.card_scanner.domain.usecases
 
-import androidx.lifecycle.viewModelScope
 import com.antmar.card_scanner.domain.CardScannerRepository
 import com.antmar.core.domain.entity.CardUIEntity
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class InsertCardUseCase(
+class UpdateCardUseCase (
     private val repository: CardScannerRepository
 ) {
     suspend operator fun invoke(
+        id: Int,
         name: String,
         code: String,
         color: Long,
         isBarcode: Boolean
     ) {
         val card =
-            CardUIEntity(id = 0, name = name, code = code, color = color, isBarcode = isBarcode)
+            CardUIEntity(id = id, name = name, code = code, color = color, isBarcode = isBarcode)
 
-        repository.insertCard(card)
+        repository.updateCard(card)
     }
 }
