@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/card-scanner" />
             <option value="$PROJECT_DIR$/features/cards-list" />
+            <option value="$PROJECT_DIR$/features/push-messaging" />
             <option value="$PROJECT_DIR$/features/single-card-preview" />
             <option value="$PROJECT_DIR$/local-database" />
           </set>

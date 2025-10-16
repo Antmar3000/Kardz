@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":features:single-card-preview"))
     implementation(project(":features:cards-list"))
     implementation(project(":features:card-scanner"))
+    implementation(project(":features:push-messaging"))
     implementation(project(":local-database"))
 
     implementation(libs.androidx.core.ktx)
