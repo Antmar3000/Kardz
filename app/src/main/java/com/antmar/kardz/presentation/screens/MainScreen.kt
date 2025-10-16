@@ -24,6 +24,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.antmar.card_scanner.presentation.screens.CardAdditionScreen
 import com.antmar.cards_list.presentation.screens.CardListScreen
 import com.antmar.core.navigation.NavRoutes
@@ -35,6 +37,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.delay
+import java.net.URLDecoder
 
 @Composable
 fun MainScreen() {
@@ -74,8 +77,32 @@ fun MainScreen() {
                 BarcodeScreen(databaseComponent, navigator)
             }
 
-            composable(route = NavRoutes.SCANNER.route) {
-                CardAdditionScreen(databaseComponent, navigator)
+            composable(route =
+                "${NavRoutes.SCANNER.route}?" +
+            "name={name}&code={code}&isBarcode={isBarcode}",
+                arguments = listOf(
+                    navArgument("name") {defaultValue = ""},
+                    navArgument("code") { defaultValue = "" },
+                    navArgument("isBarcode") { defaultValue = "true" }
+                ),
+                deepLinks = listOf(
+                    navDeepLink {
+                        uriPattern = "myapp://add_card?" +
+                                "title={name}&barcode={code}&isBarcode={isBarcode}"
+                    }
+                )
+            ) { backStackEntry ->
+
+                val name = URLDecoder.decode(backStackEntry.arguments?.getString("name") ?: "", "UTF-8")
+                val code = URLDecoder.decode(backStackEntry.arguments?.getString("code") ?: "", "UTF-8")
+                val isBarcode = backStackEntry.arguments?.getString("isBarcode")?.toBoolean()
+
+                CardAdditionScreen(
+                    databaseComponent,
+                    navigator,
+                    prefillName = name,
+                    prefillCode = code,
+                    prefillIsBarcode = isBarcode)
             }
         }
     }
@@ -100,7 +127,6 @@ fun MainScreen() {
     }
 
     LaunchedEffect(hasNotificationPermission) {
-        delay(1000)
         if (hasNotificationPermission) {
 
             val firebaseApps = FirebaseApp.getApps(context)
@@ -109,7 +135,7 @@ fun MainScreen() {
                 FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val token = task.result
-                        Log.d("myLog", "token = $token")
+                        Log.d("myLog", "main screen token = $token")
                     }
                 }
             } else {

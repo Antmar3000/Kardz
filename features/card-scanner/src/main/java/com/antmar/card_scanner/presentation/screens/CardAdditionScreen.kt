@@ -41,7 +41,13 @@ import com.antmar.local_database.di.DatabaseComponent
 import kotlinx.coroutines.delay
 
 @Composable
-fun CardAdditionScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
+fun CardAdditionScreen(
+    databaseComponent: DatabaseComponent,
+    navigator: Navigator,
+    prefillName: String? = null,
+    prefillCode: String? = null,
+    prefillIsBarcode: Boolean? = null
+) {
 
     val component = CardScannerComponent::class.create(databaseComponent)
     val viewModel = KIViewModel(component.cardScannerViewModelFactory())
@@ -57,17 +63,20 @@ fun CardAdditionScreen(databaseComponent: DatabaseComponent, navigator: Navigato
 
     val context = LocalContext.current
 
-    LaunchedEffect(currentCard) {
-        Log.d("myLog", "currentCard is $currentCard")
+    LaunchedEffect(currentCard, prefillName, prefillCode, prefillIsBarcode) {
         if (currentCard != null) {
             inputStateName.value = currentCard.name
             inputStateCode.value = currentCard.code
             inputStateIsBarcode = currentCard.isBarcode
             selectedColor = currentCard.color
+        } else {
+            prefillName?.let { inputStateName.value = it }
+            prefillCode?.let { inputStateCode.value = it }
+            prefillIsBarcode?.let { inputStateIsBarcode = it }
         }
     }
 
-    BackHandler (enabled = true) {
+    BackHandler(enabled = true) {
         viewModel.clearEditCardId()
         navigator.popBackStack()
     }
@@ -197,40 +206,6 @@ fun CardAdditionScreen(databaseComponent: DatabaseComponent, navigator: Navigato
                                 ).show()
                             }
                         }
-
-//                        if (inputStateCode.value.isNotEmpty()) {
-//                            if (inputStateIsBarcode) {
-//                                if (inputStateCode.value.length == 12 || inputStateCode.value.length == 13) {
-//                                    viewModel.insertCard(
-//                                        name = inputStateName.value,
-//                                        code = inputStateCode.value,
-//                                        color = selectedColor,
-//                                        isBarcode = inputStateIsBarcode
-//                                    )
-//                                    navigator.navigate(NavRoutes.LIST)
-//                                } else {
-//                                    Toast.makeText(
-//                                        context,
-//                                        "barcode number should contain 12 or 13 digits",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                }
-//                            } else {
-//                                viewModel.insertCard(
-//                                    name = inputStateName.value,
-//                                    code = inputStateCode.value,
-//                                    color = selectedColor,
-//                                    isBarcode = inputStateIsBarcode
-//                                )
-//                                navigator.navigate(NavRoutes.LIST)
-//                            }
-//                        } else {
-//                            Toast.makeText(
-//                                context,
-//                                "code should not be empty",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
