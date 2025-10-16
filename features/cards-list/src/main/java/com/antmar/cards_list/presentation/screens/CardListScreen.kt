@@ -1,44 +1,30 @@
 package com.antmar.cards_list.presentation.screens
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.antmar.cards_list.di.CardsListComponent
 import com.antmar.cards_list.di.create
 import com.antmar.core.di.KIViewModel
 import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
+import com.antmar.core.ui.dialogs.DeleteCardDialogContent
 import com.antmar.core.ui.dialogs.HorizontalExpandDialog
 import com.antmar.local_database.di.DatabaseComponent
 
@@ -52,53 +38,27 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
     val dialogState = viewModel.dialogState.collectAsStateWithLifecycle().value
 
+    val activity = LocalActivity.current
+    BackHandler (enabled = true) {
+        activity?.finish()
+    }
+
+    fun deleteCard() {
+        viewModel.deleteCard(dialogState)
+        viewModel.toggleDeleteDialog(-1)
+    }
+
+    fun navigateToAddCardScreen() {
+        navigator.navigate(NavRoutes.SCANNER)
+    }
+
     if (dialogState != -1) {
 
         HorizontalExpandDialog(onDismissRequest = { viewModel.toggleDeleteDialog(-1) }) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                Text(
-                    "Delete card?",
-                    color = Color.DarkGray,
-                    fontSize = 24.sp
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "do_delete",
-                        modifier = Modifier
-                            .clickable(
-                                onClick = {
-                                    viewModel.deleteCard(dialogState)
-                                    viewModel.toggleDeleteDialog(-1)
-                                }
-                            )
-                            .size(40.dp),
-                        tint = Color.DarkGray)
-
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "do_not_delete",
-                        modifier = Modifier
-                            .clickable(
-                                onClick = { viewModel.toggleDeleteDialog(-1) }
-                            )
-                            .size(40.dp),
-                        tint = Color.DarkGray)
-                }
-            }
+            DeleteCardDialogContent(
+                onConfirm = { deleteCard() },
+                onCancel = { viewModel.toggleDeleteDialog(-1) }
+            )
         }
     }
 
@@ -127,7 +87,7 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(8.dp),
-            onClick = { navigator.navigate(NavRoutes.SCANNER) },
+            onClick = { navigateToAddCardScreen() },
             shape = CircleShape,
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = Color.White

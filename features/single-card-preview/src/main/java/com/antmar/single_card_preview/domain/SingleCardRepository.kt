@@ -5,8 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SingleCardRepository {
 
-    suspend fun updateCard (card : CardUIEntity)
-
     suspend fun deleteCard (id : Int)
 
     suspend fun getCard (id : Int) : Flow<CardUIEntity?>

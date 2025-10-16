@@ -1,5 +1,7 @@
 package com.antmar.kardz.presentation
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -16,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import com.antmar.core.ui.dialogs.setPortrait
 import com.antmar.kardz.App
 import com.antmar.kardz.presentation.screens.MainScreen
 import com.antmar.kardz.presentation.theme.KardzTheme
@@ -24,9 +27,11 @@ import com.google.firebase.FirebaseApp
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setPortrait(this)
+
         setContent {
             KardzTheme {
-
                 enableEdgeToEdge(
                     statusBarStyle = SystemBarStyle.dark(
                         MaterialTheme.colorScheme.background.toArgb(),
@@ -36,10 +41,7 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
-                val databaseComponent =
-                    (LocalContext.current.applicationContext as App).databaseComponent
-
-                MainScreen(databaseComponent)
+                MainScreen()
 
             }
         }

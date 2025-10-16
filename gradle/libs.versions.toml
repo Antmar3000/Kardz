@@ -23,6 +23,7 @@ core-testing = "2.2.0"
 coroutines-test = "1.7.1"
 turbine = "1.2.1"
 firebase = "34.1.0"
+kotlin-serialization = "1.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,7 +60,6 @@ zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing"}
 
 accompanist-systemui = {group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanistUI"}
 
-
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk"}
 mockk-agent = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "mockk" }
 
@@ -71,6 +71,8 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging"}
 
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -81,4 +83,5 @@ room = { id = "androidx.room", version.ref = "room"}
 android-library = { id = "com.android.library", version.ref = "agp" }
 
 google-services = { id = "com.google.gms.google-services", version = "4.4.3"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 

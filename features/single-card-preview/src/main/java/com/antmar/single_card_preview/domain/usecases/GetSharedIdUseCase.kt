@@ -9,9 +9,7 @@ import me.tatarka.inject.annotations.Inject
 class GetSharedIdUseCase (
     private val sharedDataManager: SharedDataManager
 ) {
-    operator fun invoke() : SharedFlow<Int> {
-        Log.d("myLog", "get = $sharedDataManager")
-        return sharedDataManager.sharedId
-    }
+    operator fun invoke() : SharedFlow<Int> = sharedDataManager.sharedId
+
 
 }

@@ -4,7 +4,7 @@ import com.antmar.local_database.di.DatabaseComponent
 import com.antmar.single_card_preview.data.repository.SingleCardRepositoryImpl
 import com.antmar.single_card_preview.domain.SingleCardRepository
 import com.antmar.single_card_preview.domain.usecases.DeleteCardUseCase
-import com.antmar.single_card_preview.domain.usecases.EditCardUseCase
+import com.antmar.single_card_preview.domain.usecases.SendCardUseCase
 import com.antmar.single_card_preview.domain.usecases.GetCardUseCase
 import com.antmar.single_card_preview.domain.usecases.GetSharedIdUseCase
 import com.antmar.single_card_preview.presentation.viewmodels.SingleCardViewModel
@@ -28,7 +28,7 @@ abstract class SingleCardComponent(
     fun provideRepository (impl : SingleCardRepositoryImpl) : SingleCardRepository = impl
 
     abstract fun getDeleteCardUseCase () : DeleteCardUseCase
-    abstract fun getEditCardUseCase () : EditCardUseCase
+    abstract fun getSendCardUseCase () : SendCardUseCase
     abstract fun getGetCardUseCase() : GetCardUseCase
     abstract fun getGetSharedIdUseCase() : GetSharedIdUseCase
 

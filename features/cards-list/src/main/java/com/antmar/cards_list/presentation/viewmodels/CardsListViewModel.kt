@@ -9,6 +9,9 @@ import com.antmar.cards_list.domain.usecases.GetAllCardsUseCase
 import com.antmar.cards_list.domain.usecases.SendIdUseCase
 import com.antmar.core.domain.entity.CardUIEntity
 import com.antmar.local_database.data.shared_data.SharedDataManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,27 +36,27 @@ class CardsListViewModel(
     }
 
     private fun collectCards() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             getAllCardsUseCase.invoke().collect {
                 _allCardsListState.value = it
             }
         }
     }
 
-    fun deleteCard(id : Int) {
-        viewModelScope.launch {
+    fun deleteCard(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
             delay(250)
             deleteCardUseCase(id)
         }
     }
 
-    fun sendCardId (id: Int) {
+    fun sendCardId(id: Int) {
         viewModelScope.launch {
             sendIdUseCase(id)
         }
     }
 
-    fun toggleDeleteDialog (id : Int) {
+    fun toggleDeleteDialog(id: Int) {
         _dialogState.value = id
     }
 }
