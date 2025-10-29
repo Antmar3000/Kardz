@@ -9,7 +9,6 @@ class SendIdUseCase (
     private val sharedDataManager: SharedDataManager
 ) {
     suspend operator fun invoke(id : Int) {
-        Log.d("myLog", "send = $sharedDataManager")
         sharedDataManager.updateSharedId(id)
     }
 }

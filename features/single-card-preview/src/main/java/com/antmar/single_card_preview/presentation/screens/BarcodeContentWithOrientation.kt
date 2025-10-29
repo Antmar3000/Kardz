@@ -160,16 +160,6 @@ fun BarcodeContentWithOrientation(
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-//                Text(
-//                    modifier = Modifier.padding(top = 24.dp),
-//                    text = card.name,
-//                    fontSize = 40.sp,
-//                    style = TextStyle(
-//                        color = getColorBasedOnBackground(card.color)
-//                    )
-//                )
-
                 Card(
                     modifier = Modifier
                         .fillMaxSize()

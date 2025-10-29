@@ -12,6 +12,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,6 +64,10 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
             viewModel.sendCardId(currentCard.id)
             navigator.navigate(NavRoutes.SCANNER)
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.collectId()
     }
 
     DisposableEffect(Unit) {

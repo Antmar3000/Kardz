@@ -14,6 +14,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +42,11 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
     val activity = LocalActivity.current
     BackHandler (enabled = true) {
         activity?.finish()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.collectCards()
+        viewModel.sendCardId(-1)
     }
 
     fun deleteCard() {
