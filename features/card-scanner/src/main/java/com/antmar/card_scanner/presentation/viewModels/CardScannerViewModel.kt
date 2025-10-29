@@ -1,6 +1,5 @@
 package com.antmar.card_scanner.presentation.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antmar.card_scanner.domain.usecases.GetCardUseCase
@@ -8,10 +7,11 @@ import com.antmar.card_scanner.domain.usecases.GetSharedIdUseCase
 import com.antmar.card_scanner.domain.usecases.InsertCardUseCase
 import com.antmar.card_scanner.domain.usecases.UpdateCardUseCase
 import com.antmar.core.domain.entity.CardUIEntity
-import kotlinx.coroutines.delay
+import com.antmar.core.utils.InputCheckedValue
+import com.antmar.core.utils.checkInput
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 
@@ -23,12 +23,8 @@ class CardScannerViewModel(
     private val updateCardUseCase: UpdateCardUseCase
 ) : ViewModel() {
 
-    init {
-        collectCard()
-    }
-
     private val _currentCardState = MutableStateFlow<CardUIEntity?>(null)
-    val currentCardState get() = _currentCardState.asStateFlow()
+    val currentCardState = _currentCardState.asStateFlow()
 
     fun insertCard(
         name: String,
@@ -52,27 +48,69 @@ class CardScannerViewModel(
         }
     }
 
-    private fun collectCard() {
+    fun collectCard() {
         viewModelScope.launch {
             getSharedCardUseCase.invoke().collect { id ->
-                Log.d("myLog", "scannerVM, getSharedId = $id")
                 getCardUseCase(id).collect { cardUIEntity ->
-                    Log.d("myLog", "scannerVM, getSharedCard = $cardUIEntity")
                     _currentCardState.value = cardUIEntity
                 }
             }
         }
     }
 
-    fun clearEditCardId() {
+    fun clearCurrentCard() {
         viewModelScope.launch {
-            getSharedCardUseCase.clearEditCardId()
+            _currentCardState.value = null
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        Log.d("myLog", "cleared VM")
-        clearEditCardId()
+        clearCurrentCard()
+    }
+
+    fun updateOrInsertCard(
+        id: Int?,
+        name: String,
+        code: String,
+        color: Long,
+        isBarcode: Boolean,
+        onValidCode: () -> Unit,
+        onInvalidCode: () -> Unit,
+        onEmptyCode: () -> Unit
+    ) {
+       if (id != null) {
+
+           when ( checkInput(name, isBarcode, code.length) ) {
+
+               InputCheckedValue.VALID_CODE -> {
+                   updateCard(id, name, code, color, isBarcode)
+                   clearCurrentCard()
+                   onValidCode()
+               }
+               InputCheckedValue.INVALID_CODE -> {
+                   onInvalidCode()
+               }
+               InputCheckedValue.EMPTY_CODE -> {
+                   onEmptyCode()
+               }
+           }
+       }
+        else {
+           when ( checkInput(name, isBarcode, code.length) ) {
+
+               InputCheckedValue.VALID_CODE -> {
+                   insertCard(name, code, color, isBarcode)
+                   clearCurrentCard()
+                   onValidCode()
+               }
+               InputCheckedValue.INVALID_CODE -> {
+                   onInvalidCode()
+               }
+               InputCheckedValue.EMPTY_CODE -> {
+                   onEmptyCode()
+               }
+           }
+       }
     }
 }

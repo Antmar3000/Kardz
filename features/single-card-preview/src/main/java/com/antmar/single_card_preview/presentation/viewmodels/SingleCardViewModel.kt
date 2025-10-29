@@ -20,17 +20,13 @@ class SingleCardViewModel(
     private val getSharedIdUseCase: GetSharedIdUseCase
 ) : ViewModel() {
 
-    init {
-        collectId()
-    }
-
     private val _currentCardState = MutableStateFlow<CardUIEntity?>(null)
-    val currentCardState get() = _currentCardState.asStateFlow()
+    val currentCardState = _currentCardState.asStateFlow()
 
     private val _dialogState = MutableStateFlow(false)
-    val dialogState get() = _dialogState.asStateFlow()
+    val dialogState = _dialogState.asStateFlow()
 
-    private fun collectId() {
+    fun collectId() {
         viewModelScope.launch {
             getSharedIdUseCase.invoke().collect { id ->
                 getCardUseCase(id).collect { cardUIEntity ->

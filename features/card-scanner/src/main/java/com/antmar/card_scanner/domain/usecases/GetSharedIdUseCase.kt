@@ -12,8 +12,6 @@ class GetSharedIdUseCase (
 
     operator fun invoke() : SharedFlow<Int>  {
         Log.d("myLog", "shared DM = ${sharedDataManager.toString()}")
-        return sharedDataManager.editCardId
+        return sharedDataManager.sharedId
     }
-
-    suspend fun clearEditCardId() = sharedDataManager.clearEditCardId()
 }

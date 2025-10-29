@@ -1,6 +1,6 @@
 package com.antmar.card_scanner.presentation.screens
 
-import android.util.Log
+import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -37,8 +37,9 @@ import com.antmar.core.di.KIViewModel
 import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
 import com.antmar.core.ui.ColorPalette
+import com.antmar.core.utils.InputCheckedValue
+import com.antmar.core.utils.checkInput
 import com.antmar.local_database.di.DatabaseComponent
-import kotlinx.coroutines.delay
 
 @Composable
 fun CardAdditionScreen(
@@ -63,6 +64,10 @@ fun CardAdditionScreen(
 
     val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        viewModel.collectCard()
+    }
+
     LaunchedEffect(currentCard, prefillName, prefillCode, prefillIsBarcode) {
         if (currentCard != null) {
             inputStateName.value = currentCard.name
@@ -77,7 +82,7 @@ fun CardAdditionScreen(
     }
 
     BackHandler(enabled = true) {
-        viewModel.clearEditCardId()
+        viewModel.clearCurrentCard()
         navigator.popBackStack()
     }
 
@@ -135,78 +140,22 @@ fun CardAdditionScreen(
 
             Button(
                 onClick = {
-
-                    if (currentCard != null) {
-
-                        when (checkInput(
-                            inputStateName.value,
-                            inputStateIsBarcode,
-                            inputStateCode.value.length
-                        )) {
-
-                            InputCheckedValue.VALID_CODE -> {
-                                viewModel.updateCard(
-                                    id = currentCard.id,
-                                    name = inputStateName.value,
-                                    code = inputStateCode.value,
-                                    color = selectedColor,
-                                    isBarcode = inputStateIsBarcode
-                                )
-                                navigator.popBackStack()
-                            }
-
-                            InputCheckedValue.INVALID_CODE -> {
-                                Toast.makeText(
-                                    context,
-                                    "barcode number should contain 12 or 13 digits",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-
-                            InputCheckedValue.EMPTY_CODE -> {
-                                Toast.makeText(
-                                    context,
-                                    "code should not be empty",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                    viewModel.updateOrInsertCard(
+                        currentCard?.id,
+                        inputStateName.value,
+                        inputStateCode.value,
+                        selectedColor,
+                        inputStateIsBarcode,
+                        {
+                            navigator.popBackStack()
+                        },
+                        {
+                            makeInvalidCodeLengthText(context)
+                        },
+                        {
+                            makeEmptyCodeText(context)
                         }
-
-                    } else {
-
-                        when (checkInput(
-                            inputStateName.value,
-                            inputStateIsBarcode,
-                            inputStateCode.value.length
-                        )) {
-
-                            InputCheckedValue.VALID_CODE -> {
-                                viewModel.insertCard(
-                                    name = inputStateName.value,
-                                    code = inputStateCode.value,
-                                    color = selectedColor,
-                                    isBarcode = inputStateIsBarcode
-                                )
-                                navigator.navigate(NavRoutes.LIST)
-                            }
-
-                            InputCheckedValue.INVALID_CODE -> {
-                                Toast.makeText(
-                                    context,
-                                    "barcode number should contain 12 or 13 digits",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-
-                            InputCheckedValue.EMPTY_CODE -> {
-                                Toast.makeText(
-                                    context,
-                                    "code should not be empty",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
@@ -220,30 +169,11 @@ fun CardAdditionScreen(
     }
 }
 
-fun checkInput(
-    name: String,
-    isBarcode: Boolean,
-    length: Int
-): InputCheckedValue {
-
-    return if (name.isNotEmpty()) {
-        if (isBarcode) {
-            if (length == 12 || length == 13) {
-                InputCheckedValue.VALID_CODE
-            } else {
-                InputCheckedValue.INVALID_CODE
-            }
-        } else {
-            InputCheckedValue.VALID_CODE
-        }
-    } else {
-        InputCheckedValue.EMPTY_CODE
-    }
-
+fun makeInvalidCodeLengthText(context: Context) {
+    Toast.makeText(context, "code should be 12 or 13 digits long", Toast.LENGTH_SHORT).show()
 }
 
-enum class InputCheckedValue {
-    VALID_CODE,
-    INVALID_CODE,
-    EMPTY_CODE
+fun makeEmptyCodeText (context: Context) {
+    Toast.makeText(context, "code should not be empty", Toast.LENGTH_SHORT).show()
 }
+

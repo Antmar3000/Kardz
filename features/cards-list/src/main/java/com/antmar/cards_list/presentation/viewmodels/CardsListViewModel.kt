@@ -26,16 +26,12 @@ class CardsListViewModel(
 ) : ViewModel() {
 
     private val _allCardsListState = MutableStateFlow<List<CardUIEntity>>(emptyList())
-    val allCardsListState get() = _allCardsListState.asStateFlow()
+    val allCardsListState = _allCardsListState.asStateFlow()
 
     private val _dialogState = MutableStateFlow(-1)
-    val dialogState get() = _dialogState.asStateFlow()
+    val dialogState = _dialogState.asStateFlow()
 
-    init {
-        collectCards()
-    }
-
-    private fun collectCards() {
+    fun collectCards() {
         viewModelScope.launch(Dispatchers.IO) {
             getAllCardsUseCase.invoke().collect {
                 _allCardsListState.value = it

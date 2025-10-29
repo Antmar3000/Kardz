@@ -10,5 +10,5 @@ import me.tatarka.inject.annotations.Inject
 class SendCardUseCase(
     private val sharedDataManager: SharedDataManager
 ) {
-    suspend operator fun invoke(id: Int) = sharedDataManager.updateEditCardId(id)
+    suspend operator fun invoke(id: Int) = sharedDataManager.updateSharedId(id)
 }
