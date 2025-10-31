@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.antmar.core.di.KIViewModel
+import com.antmar.core.domain.entity.CardId
 import com.antmar.core.domain.entity.CardUIEntity
 import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
@@ -61,7 +62,7 @@ fun BarcodeScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
     fun onEditClick() {
         setPortrait(activity)
         if (currentCard != null) {
-            viewModel.sendCardId(currentCard.id)
+            viewModel.sendCardId(CardId(currentCard.id))
             navigator.navigate(NavRoutes.SCANNER)
         }
     }

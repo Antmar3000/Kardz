@@ -1,7 +1,9 @@
 package com.antmar.kardz.presentation.screens
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -21,6 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.core.content.IntentCompat
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -31,6 +37,7 @@ import com.antmar.cards_list.presentation.screens.CardListScreen
 import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
 import com.antmar.kardz.App
+import com.antmar.kardz.messaging.DeepLinkManager
 import com.antmar.local_database.di.DatabaseComponent
 import com.antmar.single_card_preview.presentation.screens.BarcodeScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -60,6 +67,13 @@ fun MainScreen() {
         }
     }
 
+    LaunchedEffect(Unit) {
+        val pendingUri = DeepLinkManager.getPendingUri()
+        pendingUri?.let { uri ->
+            Log.d("ReceiverLog", "uri main screen = $uri")
+        }
+    }
+
     Scaffold(
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) { padding ->
@@ -78,17 +92,21 @@ fun MainScreen() {
             }
 
             composable(route =
-                "${NavRoutes.SCANNER.route}?" +
-            "name={name}&code={code}&isBarcode={isBarcode}",
+                "${NavRoutes.SCANNER.route}/{name}/{code}/{isBarcode}",
                 arguments = listOf(
-                    navArgument("name") {defaultValue = ""},
-                    navArgument("code") { defaultValue = "" },
-                    navArgument("isBarcode") { defaultValue = "true" }
+                    navArgument("name") {
+                        defaultValue = ""
+                        type = NavType.StringType },
+                    navArgument("code") {
+                        defaultValue = ""
+                        type = NavType.StringType },
+                    navArgument("isBarcode") {
+                        defaultValue = "true"
+                        type = NavType.StringType}
                 ),
                 deepLinks = listOf(
                     navDeepLink {
-                        uriPattern = "myapp://add_card?" +
-                                "title={name}&barcode={code}&isBarcode={isBarcode}"
+                        uriPattern = "myapp://add_card/{name}/{code}/{isBarcode}"
                     }
                 )
             ) { backStackEntry ->
@@ -135,11 +153,11 @@ fun MainScreen() {
                 FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val token = task.result
-                        Log.d("myLog", "main screen token = $token")
+                        Log.d("amLog", "main screen token = $token")
                     }
                 }
             } else {
-                Log.d("myLog", "firebase not initialized")
+                Log.d("amLog", "firebase not initialized")
             }
 
 

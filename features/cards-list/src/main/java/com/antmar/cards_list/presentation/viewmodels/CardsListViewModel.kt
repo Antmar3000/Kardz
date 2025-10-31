@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.antmar.cards_list.domain.usecases.DeleteCardUseCase
 import com.antmar.cards_list.domain.usecases.GetAllCardsUseCase
 import com.antmar.cards_list.domain.usecases.SendIdUseCase
+import com.antmar.core.domain.entity.CardId
 import com.antmar.core.domain.entity.CardUIEntity
 import com.antmar.local_database.data.shared_data.SharedDataManager
 import kotlinx.coroutines.CoroutineScope
@@ -46,9 +47,9 @@ class CardsListViewModel(
         }
     }
 
-    fun sendCardId(id: Int) {
+    fun sendCardId(cardId: CardId) {
         viewModelScope.launch {
-            sendIdUseCase(id)
+            sendIdUseCase(cardId)
         }
     }
 

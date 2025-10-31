@@ -7,3 +7,6 @@ data class CardUIEntity (
     val color : Long,
     val isBarcode : Boolean
 )
+
+@JvmInline
+value class CardId (val id : Int)

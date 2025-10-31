@@ -17,12 +17,24 @@ class PushMessagingService() : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
 
         val data = message.data
+
+        Log.d("ReceiverLog", "$data")
+
         if (data["type"] == "new_card") {
-            val name = URLEncoder.encode(data["name"], "UTF-8")
-            val code = URLEncoder.encode(data["code"], "UTF-8")
+
+//            val name = URLEncoder.encode(data["name"], "UTF-8")
+//            val code = URLEncoder.encode(data["code"], "UTF-8")
+//            val isBarcode = data["isBarcode"]
+
+            val name = data["name"]
+            val code = data["code"]
             val isBarcode = data["isBarcode"]
 
-            val uri = "myapp://add_card?name=$name&code=$code&isBarcode=$isBarcode".toUri()
+
+
+            val uri = "myapp://add_card/$name/$code/$isBarcode".toUri()
+
+            Log.d("ReceiverLog", "$uri")
 
             val intent = Intent(Intent.ACTION_VIEW, uri, this, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)

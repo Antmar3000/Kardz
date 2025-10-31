@@ -2,6 +2,7 @@ package com.antmar.single_card_preview.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.antmar.core.domain.entity.CardId
 import com.antmar.core.domain.entity.CardUIEntity
 import com.antmar.single_card_preview.domain.usecases.DeleteCardUseCase
 import com.antmar.single_card_preview.domain.usecases.SendCardUseCase
@@ -46,9 +47,9 @@ class SingleCardViewModel(
         }
     }
 
-    fun sendCardId(id: Int) {
+    fun sendCardId(cardId: CardId) {
         viewModelScope.launch {
-            sendCardUseCase(id)
+            sendCardUseCase(cardId)
         }
     }
 }

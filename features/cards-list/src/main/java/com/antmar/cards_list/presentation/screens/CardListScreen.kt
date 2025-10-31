@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.antmar.cards_list.di.CardsListComponent
 import com.antmar.cards_list.di.create
 import com.antmar.core.di.KIViewModel
+import com.antmar.core.domain.entity.CardId
 import com.antmar.core.navigation.NavRoutes
 import com.antmar.core.navigation.Navigator
 import com.antmar.core.ui.dialogs.DeleteCardDialogContent
@@ -46,7 +47,7 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
 
     LaunchedEffect(Unit) {
         viewModel.collectCards()
-        viewModel.sendCardId(-1)
+        viewModel.sendCardId(CardId(-1))
     }
 
     fun deleteCard() {
@@ -82,7 +83,7 @@ fun CardListScreen(databaseComponent: DatabaseComponent, navigator: Navigator) {
                 SwipeToDeleteCardListItem(
                     card = card,
                     navigate = {
-                        viewModel.sendCardId(card.id)
+                        viewModel.sendCardId(CardId(card.id))
                         navigator.navigate(NavRoutes.BARCODE)
                     },
                     onSwipe = { viewModel.toggleDeleteDialog(card.id) })

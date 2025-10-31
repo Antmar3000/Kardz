@@ -1,6 +1,7 @@
 package com.antmar.card_scanner.presentation.screens
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -68,7 +69,14 @@ fun CardAdditionScreen(
         viewModel.collectCard()
     }
 
-    LaunchedEffect(currentCard, prefillName, prefillCode, prefillIsBarcode) {
+    LaunchedEffect(prefillName, prefillCode, prefillIsBarcode) {
+        Log.d("DeepLinkDebug", "🔍 Received parameters:")
+        Log.d("DeepLinkDebug", "   name: '$prefillName'")
+        Log.d("DeepLinkDebug", "   code: '$prefillCode'")
+        Log.d("DeepLinkDebug", "   isBarcode: $prefillIsBarcode")
+    }
+
+    LaunchedEffect(currentCard) {
         if (currentCard != null) {
             inputStateName.value = currentCard.name
             inputStateCode.value = currentCard.code
