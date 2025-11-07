@@ -58,8 +58,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     //tests
-    testImplementation(libs.mockk)
-    testImplementation(libs.mockk.agent)
+    testImplementation(libs.bundles.mockk.full)
     testImplementation(libs.turbine)
     testImplementation(libs.core.testing)
     testImplementation(libs.coroutines.test)
